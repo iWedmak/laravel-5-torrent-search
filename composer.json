@@ -1,0 +1,23 @@
+{
+    "name": "iwedmak/torrent-search",
+    "description": "Search in some torrrent sites, laravel 5",
+    "keywords": ["laravel","illuminate","curl","useragent","torrent","PirateBay","Torrentz","ExtraTorrent","Eztv","KickassTorrents","RARBG"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "iWedmak Om",
+            "email": "iwedmak@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "laravel/framework": "5.*   ",
+        "iwedmak/extra-curl": "*",
+        "yangqi/htmldom": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "iWedmak\\TorrentSearch\\": "src/"
+        }
+    }
+}
