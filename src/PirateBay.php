@@ -1,8 +1,8 @@
 <?php namespace iWedmak\TorrentSearch;
 
-use iWedmak\ExtraCurl;
+use iWedmak\ExtraCurl\Parser;
 
-class PirateBay extends TorrentSearchInterface 
+class PirateBay implements TorrentSearchInterface 
 {
 
     public static function page($url, $cache=5, $client=false)
@@ -11,12 +11,23 @@ class PirateBay extends TorrentSearchInterface
         {
             $client=new Parser;
         }
-        if($resp=$client->get($url, 0, 'file'))
+        if($resp=$client->get($url, $cache, 'file'))
         {
-            $col2=$html->find('dl.col2', 0);
-            //$col1=$html->find('dl.col1', 0);
-            $seeds=$col2->find('dd', 2)->plaintext;
-            $leachs=$col2->find('dd', 3)->plaintext;
+            $html=new \Htmldom;
+            $html->str_get_html($resp);
+            $size=$html->find('dl.col1 dd', 2)->plaintext;
+            $size=preg_replace ( '/\((.*?)\)/i' , '', $size);
+            $torrent=Search::makeRes
+                (
+                    'PirateBay', 
+                    $html->find('div#title a', 0)->attr['href'], 
+                    $html->find('div#title', 0)->plaintext, 
+                    $html->find('a[href*=magnet]', 0)->attr['href'], 
+                    $size, 
+                    $html->find('dl.col2 dd', 1)->plaintext, 
+                    $html->find('dl.col2 dd', 2)->plaintext
+                );
+            return $torrent;
         }
         
     }
@@ -42,17 +53,17 @@ class PirateBay extends TorrentSearchInterface
                     $torrent=Search::makeRes
                         (
                             'PirateBay', 
-                            'https://thepiratebay.cr'.$tr->find('td div.detName a', 0)->attr['href'],
-                            $tr->find('td div.detName a', 0)->plaintext,
-                            $tr->find('td a[href*=magnet]', 0)->attr['href'],
-                            $extra[1],
-                            $tr->find('td', 2)->plaintext,
-                            $tr->find('td', 3)->plaintext,
+                            'https://thepiratebay.cr'.$tr->find('td div.detName a', 0)->attr['href'], 
+                            $tr->find('td div.detName a', 0)->plaintext, 
+                            $tr->find('td a[href*=magnet]', 0)->attr['href'], 
+                            $extra[1], 
+                            $tr->find('td', 2)->plaintext, 
+                            $tr->find('td', 3)->plaintext
                         );
                     //*/
                     
                     /* for two colums mode
-                    Search::makeRes
+                    $torrent=Search::makeRes
                         (
                             'PirateBay', 
                             'https://thepiratebay.sh'.$tr->find('td', 1)->find('a', 0)->attr['href'],
@@ -60,16 +71,17 @@ class PirateBay extends TorrentSearchInterface
                             $tr->find('td', 3)->find('a', 0)->attr['href'],
                             $tr->find('td', 4)->plaintext,
                             $tr->find('td', 5)->plaintext,
-                            $tr->find('td', 6)->plaintext,
+                            $tr->find('td', 6)->plaintext
                         );
                     //*/
                     $result[]=$torrent;
                 }
             }
+            return $result;
         }
         else
         {
-            return ['error_code'=>$client->c->error_code];
+            return ['error_code'=>$client->c->error_code, 'error'=>$client->c->error, 'response_headers'=>$client->c->response_headers];
         }
     }
     

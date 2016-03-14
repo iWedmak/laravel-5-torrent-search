@@ -31,15 +31,16 @@ class Search
         return $search_string;
     }
     
-    public static function makeRes($source, $link, $title, $magnet, $size=false, $seeds=false, $leachs=false)
+    public static function makeRes($source, $link, $title, $magnet=false, $size=false, $seeds=false, $leachs=false, $lang=false)
     {
         $array['source']=$source;
-        $array['link']=$link;
-        $array['title']=$title;
-        $array['magnet']=$magnet;
-        $array['size']=$size;
-        $array['seeds']=$seeds;
-        $array['leachs']=$leachs;
+        $array['link']=trim($link);
+        $array['title']=trim($title);
+        $array['magnet']=trim($magnet);
+        $array['size']=trim($size);
+        $array['seeds']=trim($seeds);
+        $array['leachs']=trim($leachs);
+        $array['lang']=trim($leachs);
         return $array;
     }
     
