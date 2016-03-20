@@ -34,7 +34,7 @@ class RARBG implements TorrentSearchInterface
                 );
             return $torrent;
         }
-        
+        return Search::makeError($client);
     }
     
     public static function search($url, $cache=5, $client=false)
@@ -66,10 +66,7 @@ class RARBG implements TorrentSearchInterface
             }
             return $result;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code];
-        }
+        return Search::makeError($client);
     }
     
 }

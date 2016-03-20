@@ -27,7 +27,7 @@ class Eztv implements TorrentSearchInterface
                 );
             return $torrent;
         }
-        
+        return Search::makeError($client);
     }
     
     public static function search($url, $cache=5, $client=false)
@@ -44,7 +44,6 @@ class Eztv implements TorrentSearchInterface
             $result=[];
             foreach($html->find('table.forum_header_border tr.forum_header_border') as $tr)
             {
-                //pre();
                 $torrent=Search::makeRes
                 (
                     'Eztv', 
@@ -58,10 +57,7 @@ class Eztv implements TorrentSearchInterface
             }
             return $result;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code];
-        }
+        return Search::makeError($client);
     }
     
 }

@@ -15,8 +15,6 @@ class ExtraTorrent implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            pre($url);
-            //pre($resp);
             $torrent=Search::makeRes
                 (
                     'ExtraTorrent', 
@@ -27,13 +25,9 @@ class ExtraTorrent implements TorrentSearchInterface
                     @$html->find('span.seed', 0)->plaintext, 
                     @$html->find('span.leech', 0)->plaintext
                 );
-            pre($torrent);
             return $torrent;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code];
-        }
+        return Search::makeError($client);
         
     }
     
@@ -68,10 +62,7 @@ class ExtraTorrent implements TorrentSearchInterface
             }
             return $result;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code];
-        }
+        return Search::makeError($client);
     }
     
 }

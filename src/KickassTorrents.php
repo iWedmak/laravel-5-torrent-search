@@ -15,8 +15,6 @@ class KickassTorrents implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            //pre($url);
-            //pre($html->find('h1', 0));
             $torrent=Search::makeRes
                 (
                     'KickassTorrents', 
@@ -29,7 +27,7 @@ class KickassTorrents implements TorrentSearchInterface
                 );
             return $torrent;
         }
-        
+        return Search::makeError($client);
     }
     
     public static function search($url, $cache=5, $client=false)
@@ -59,10 +57,7 @@ class KickassTorrents implements TorrentSearchInterface
             }
             return $result;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code];
-        }
+        return Search::makeError($client);
     }
     
 }

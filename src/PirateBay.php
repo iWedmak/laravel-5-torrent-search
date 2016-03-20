@@ -15,7 +15,6 @@ class PirateBay implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            //pre($url);
             $size=@$html->find('dl.col1 dd', 2)->plaintext;
             if(isset($size) && !empty($size))
             {
@@ -33,7 +32,7 @@ class PirateBay implements TorrentSearchInterface
                 return $torrent;
             }
         }
-        return false;
+        return Search::makeError($client);
     }
     
     public static function search($url, $cache=5, $client=false)
@@ -44,7 +43,7 @@ class PirateBay implements TorrentSearchInterface
         }
         if($resp=$client->get($url, $cache, 'file'))
         {
-            pre($url);
+            //pre($url);
             //pre($resp);
             $html=new \Htmldom;
             $html->str_get_html($resp);
@@ -85,10 +84,7 @@ class PirateBay implements TorrentSearchInterface
             }
             return $result;
         }
-        else
-        {
-            return ['error_code'=>$client->c->error_code, 'error'=>$client->c->error, 'response_headers'=>$client->c->response_headers];
-        }
+        return Search::makeError($client);
     }
     
 }
