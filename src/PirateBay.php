@@ -44,6 +44,8 @@ class PirateBay implements TorrentSearchInterface
         }
         if($resp=$client->get($url, $cache, 'file'))
         {
+            pre($url);
+            //pre($resp);
             $html=new \Htmldom;
             $html->str_get_html($resp);
             
