@@ -40,7 +40,7 @@ class Search
         $array['size']=trim($size);
         $array['seeds']=trim($seeds);
         $array['leachs']=trim($leachs);
-        $array['lang']=trim($leachs);
+        $array['lang']=trim($lang);
         return $array;
     }
     
