@@ -5,17 +5,6 @@ use iWedmak\ExtraCurl;
 class Search 
 {
 
-    public $c;
-    
-    public function __construct()
-    {
-        $this->c=new \Curl\Curl();
-        $this->c->setopt(CURLOPT_ENCODING, 'utf-8');
-        $this->c->setopt(CURLOPT_SSL_VERIFYPEER, false);
-        $this->c->setopt(CURLOPT_RETURNTRANSFER, true);
-        
-    }
-    
     public static function url($url_template, $str, $page=0)
     {
         $string=urlencode(str_replace( array( '\'', '"', ',', "'", "!" , ';', '<', '>', ')', '('), '', $str));
@@ -38,8 +27,9 @@ class Search
         $array['title']=trim($title);
         $array['magnet']=trim($magnet);
         $array['size']=trim($size);
-        $array['seeds']=trim($seeds);
-        $array['leachs']=trim($leachs);
+        
+        $array['seeds']=(is_int($seeds/1))? (int)trim($seeds) : (boolean)$seeds;
+        $array['leachs']=(is_int($leachs/1))? (int)trim($leachs) : (boolean)$leachs;
         $array['lang']=trim($lang);
         return $array;
     }

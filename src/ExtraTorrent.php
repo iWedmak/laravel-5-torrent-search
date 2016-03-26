@@ -15,6 +15,8 @@ class ExtraTorrent implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
+            //pre('page');
+            //pre($url);
             $torrent=Search::makeRes
                 (
                     'ExtraTorrent', 

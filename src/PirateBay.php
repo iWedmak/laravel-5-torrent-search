@@ -19,6 +19,17 @@ class PirateBay implements TorrentSearchInterface
             if(isset($size) && !empty($size))
             {
                 $size=preg_replace ( '/\((.*?)\)/i' , '', $size);
+                foreach($html->find('dl.col2 dt') as $key=>$dt)
+                {
+                    if($dt->plaintext=='Seeders:')
+                    {
+                        $seeds=$html->find('dl.col2 dd', $key)->plaintext;
+                    }
+                    elseif($dt->plaintext=='Leechers:')
+                    {
+                        $leechs=$html->find('dl.col2 dd', $key)->plaintext;
+                    }
+                }
                 $torrent=Search::makeRes
                     (
                         'PirateBay', 
@@ -26,8 +37,8 @@ class PirateBay implements TorrentSearchInterface
                         $html->find('div#title', 0)->plaintext, 
                         $html->find('a[href*=magnet]', 0)->attr['href'], 
                         $size, 
-                        $html->find('dl.col2 dd', 1)->plaintext, 
-                        $html->find('dl.col2 dd', 2)->plaintext
+                        @$seeds, 
+                        @$leechs
                     );
                 return $torrent;
             }

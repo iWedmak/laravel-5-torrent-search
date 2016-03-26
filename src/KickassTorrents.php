@@ -15,6 +15,8 @@ class KickassTorrents implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
+            //pre($url);
+            //pre($resp);
             $torrent=Search::makeRes
                 (
                     'KickassTorrents', 
