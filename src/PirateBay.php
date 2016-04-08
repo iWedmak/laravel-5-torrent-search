@@ -29,6 +29,13 @@ class PirateBay implements TorrentSearchInterface
                     {
                         $leechs=$html->find('dl.col2 dd', $key)->plaintext;
                     }
+                    elseif($dt->plaintext=='By:')
+                    {
+                        if(Search::badWords($html->find('dl.col2 dd', $key)->plaintext))
+                        {
+                            return false;
+                        }
+                    }
                 }
                 $torrent=Search::makeRes
                     (
@@ -65,17 +72,21 @@ class PirateBay implements TorrentSearchInterface
                 if($tr->find('td', 1))
                 {
                     //* for one column mode
-                    preg_match('/size (.*?)\,/i', $tr->find('td font.detDesc', 0)->plaintext, $extra);
-                    $torrent=Search::makeRes
-                        (
-                            'PirateBay', 
-                            'https://thepiratebay.cr'.$tr->find('td div.detName a', 0)->attr['href'], 
-                            $tr->find('td div.detName a', 0)->plaintext, 
-                            $tr->find('td a[href*=magnet]', 0)->attr['href'], 
-                            $extra[1], 
-                            $tr->find('td', 2)->plaintext, 
-                            $tr->find('td', 3)->plaintext
-                        );
+                    if(!Search::badWords($tr->find('font.detDesc', 0)->first_child ()->plaintext))
+                    {
+                        preg_match('/size (.*?)\,/i', $tr->find('td font.detDesc', 0)->plaintext, $extra);
+                        $torrent=Search::makeRes
+                            (
+                                'PirateBay', 
+                                'https://thepiratebay.cr'.$tr->find('td div.detName a', 0)->attr['href'], 
+                                $tr->find('td div.detName a', 0)->plaintext, 
+                                $tr->find('td a[href*=magnet]', 0)->attr['href'], 
+                                $extra[1], 
+                                $tr->find('td', 2)->plaintext, 
+                                $tr->find('td', 3)->plaintext
+                            );
+                        $result[]=$torrent;
+                    }
                     //*/
                     
                     /* for two colums mode
@@ -90,7 +101,6 @@ class PirateBay implements TorrentSearchInterface
                             $tr->find('td', 6)->plaintext
                         );
                     //*/
-                    $result[]=$torrent;
                 }
             }
             return $result;

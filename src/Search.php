@@ -26,7 +26,7 @@ class Search
         $array['link']=trim($link);
         $array['title']=trim($title);
         $array['magnet']=trim($magnet);
-        $array['size']=trim($size);
+        $array['size']=html_entity_decode(trim($size));
         
         $array['seeds']=(is_int($seeds/1))? (int)trim($seeds) : (boolean)$seeds;
         $array['leachs']=(is_int($leachs/1))? (int)trim($leachs) : (boolean)$leachs;
@@ -42,6 +42,15 @@ class Search
                 'response_headers'=>$client->c->response_headers,
             ];
         return $array;
+    }
+    
+    public static function badWords($word)
+    {
+        $array=[
+                'sedinam',
+                'kenta223',
+            ];
+        return  in_array($word, $array);
     }
     
 }
