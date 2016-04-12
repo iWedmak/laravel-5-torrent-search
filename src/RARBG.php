@@ -48,7 +48,8 @@ class RARBG implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            pre($resp);
+            //pre($url);
+            //pre($resp);
             $result=[];
             foreach($html->find('table.lista2t tr.lista2') as $tr)
             {
@@ -57,7 +58,7 @@ class RARBG implements TorrentSearchInterface
                     'RARBG', 
                     'https://rarbg.to'.$tr->find('td', 1)->find('a', 0)->attr['href'], 
                     $tr->find('td', 1)->find('a', 0)->plaintext, 
-                    false, 
+                    'https://rarbg.to'.$tr->find('td', 1)->find('a', 0)->attr['href'], 
                     $tr->find('td', 3)->plaintext, 
                     $tr->find('td', 4)->plaintext, 
                     $tr->find('td', 5)->plaintext
