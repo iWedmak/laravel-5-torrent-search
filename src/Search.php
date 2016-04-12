@@ -13,10 +13,10 @@ class Search
         return $search_string;
     }
     
-    public static function makeRes($source, $link, $title, $magnet=false, $size=false, $seeds=false, $leachs=false, $lang=false)
+    public static function makeRes($source, $url, $title, $magnet=false, $size=false, $seeds=false, $leachs=false, $lang=false)
     {
         $array['source']=$source;
-        $array['link']=trim($link);
+        $array['url']=trim($url);
         $array['title']=trim($title);
         $array['magnet']=trim($magnet);
         $array['size']=html_entity_decode(trim($size));
