@@ -43,7 +43,7 @@ class KickassTorrents implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
-            foreach($html->find('tr[id*=torrent_tv_torrents]') as $tr)
+            foreach($html->find('tr.odd , tr.even') as $tr)
             {
                 $torrent=Search::makeRes
                 (

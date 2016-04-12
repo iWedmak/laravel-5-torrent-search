@@ -43,21 +43,21 @@ class ExtraTorrent implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            $trs=$html->find('table.tl tbody tr');
+            $trs=$html->find('table.tl tbody tr.tlz,table.tl tbody tr.tlr');
             $result=[];
             foreach($trs as $tr)
             {
-                if(trim($tr->find('td a', 1)->plaintext)!='')
+                if($tr->find('td a', 1))
                 {
                     $torrent=Search::makeRes
                         (
                             'ExtraTorrent', 
-                            'http://extratorrent.cc'.$tr->find('td a', 1)->attr['href'], 
-                            $tr->find('td a', 1)->plaintext, 
+                            'http://extratorrent.cc'.$tr->find('td a[title*=torrent]', 1)->attr['href'], 
+                            $tr->find('a[title*=torrent]', 1)->plaintext, 
                             'http://extratorrent.cc'.$tr->find('td a[href*=torrent]', 0)->attr['href'], 
-                            $tr->find('td', 2)->plaintext, 
-                            $tr->find('td', 3)->plaintext, 
-                            $tr->find('td', 4)->plaintext
+                            $tr->find('td', -4)->plaintext, 
+                            $tr->find('td.sn,td.sy', 0)->plaintext, 
+                            $tr->find('td.ln,td.ly', 0)->plaintext
                         );
                     $result[]=$torrent;
                 }

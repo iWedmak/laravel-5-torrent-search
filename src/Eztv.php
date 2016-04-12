@@ -40,7 +40,6 @@ class Eztv implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            
             $result=[];
             foreach($html->find('table.forum_header_border tr.forum_header_border') as $tr)
             {
