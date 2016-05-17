@@ -42,6 +42,9 @@ class Search
         $array=[
                 'sedinam',
                 'kenta223',
+                'rokibg22',
+                'pianogirl16',
+                'love_mealmie',
             ];
         return  in_array($word, $array);
     }
