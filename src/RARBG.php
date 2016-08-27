@@ -18,21 +18,24 @@ class RARBG implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            #pre($resp);
-            preg_match('/Seeders : (.*?) , Leechers : (.*?) = /i', $html->plaintext, $extra);
-            #pre($url);
-            #pre($html->find('h1', 0));
-            $torrent=Search::makeRes
-                (
-                    'RARBG', 
-                    $url, 
-                    $html->find('h1', 0)->plaintext, 
-                    $html->find('a[href*=magnet]', 0)->attr['href'], 
-                    false, 
-                    @$extra[1], 
-                    @$extra[2]
-                );
-            return $torrent;
+            if($html->find('h1', 0))
+            {
+                //pre($resp);
+                preg_match('/Seeders : (.*?) , Leechers : (.*?) = /i', $html->plaintext, $extra);
+                //pre($url);
+                //pre($html->find('h1', 0));
+                $torrent=Search::makeRes
+                    (
+                        'RARBG', 
+                        $url, 
+                        $html->find('h1', 0)->plaintext, 
+                        $html->find('a[href*=magnet]', 0)->attr['href'], 
+                        false, 
+                        @$extra[1], 
+                        @$extra[2]
+                    );
+                return $torrent;
+            }
         }
         return Search::makeError($client);
     }
