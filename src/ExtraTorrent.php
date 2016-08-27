@@ -68,4 +68,3 @@ class ExtraTorrent implements TorrentSearchInterface
     }
     
 }
-?>

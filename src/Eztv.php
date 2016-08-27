@@ -60,4 +60,3 @@ class Eztv implements TorrentSearchInterface
     }
     
 }
-?>

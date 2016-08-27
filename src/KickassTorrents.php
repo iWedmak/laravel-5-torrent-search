@@ -63,4 +63,3 @@ class KickassTorrents implements TorrentSearchInterface
     }
     
 }
-?>

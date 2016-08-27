@@ -18,10 +18,10 @@ class RARBG implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            pre($resp);
+            #pre($resp);
             preg_match('/Seeders : (.*?) , Leechers : (.*?) = /i', $html->plaintext, $extra);
-            pre($url);
-            pre($html->find('h1', 0));
+            #pre($url);
+            #pre($html->find('h1', 0));
             $torrent=Search::makeRes
                 (
                     'RARBG', 
@@ -43,7 +43,7 @@ class RARBG implements TorrentSearchInterface
         {
             $client=new Parser;
         }
-        $client->setProxy();
+        
         if($resp=$client->get($url, $cache, 'file'))
         {
             $html=new \Htmldom;
@@ -53,6 +53,7 @@ class RARBG implements TorrentSearchInterface
             $result=[];
             foreach($html->find('table.lista2t tr.lista2') as $tr)
             {
+                
                 $torrent=Search::makeRes
                 (
                     'RARBG', 
@@ -71,4 +72,3 @@ class RARBG implements TorrentSearchInterface
     }
     
 }
-?>
