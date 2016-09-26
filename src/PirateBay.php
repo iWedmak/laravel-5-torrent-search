@@ -62,28 +62,29 @@ class PirateBay implements TorrentSearchInterface
         if($resp=$client->get($url, $cache, 'file'))
         {
             //pre($url);
-            //pre($resp);
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            
+            //dd($resp);
             $result=[];
-            foreach($html->find('table#searchResult tr') as $tr)
+            foreach($html->find('.results tr') as $tr)
             {
+                //dd($tr);
                 if($tr->find('td', 1))
                 {
+                    
                     //* for one column mode
-                    if(!Search::badWords($tr->find('font.detDesc', 0)->first_child ()->plaintext))
+                    if(!Search::badWords($tr->find('i a[title*=Browse]', 0)->plaintext))
                     {
-                        preg_match('/size (.*?)\,/i', $tr->find('td font.detDesc', 0)->plaintext, $extra);
+                        preg_match('/Size (.*?)\,/i', $tr->find('i', 0)->plaintext, $extra);
                         $torrent=Search::makeRes
                             (
                                 'PirateBay', 
-                                'https://thepiratebay.cr'.$tr->find('td div.detName a', 0)->attr['href'], 
-                                $tr->find('td div.detName a', 0)->plaintext, 
-                                $tr->find('td a[href*=magnet]', 0)->attr['href'], 
+                                'https://thepiratebay.cr'.$tr->find('a[href*=torrent]', 0)->attr['href'], 
+                                $tr->find('a[href*=torrent]', 0)->plaintext, 
+                                $tr->find('a[href*=magnet]', 0)->attr['href'], 
                                 $extra[1], 
-                                $tr->find('td', 2)->plaintext, 
-                                $tr->find('td', 3)->plaintext
+                                $tr->find('td', 1)->plaintext, 
+                                $tr->find('td', 2)->plaintext
                             );
                         $result[]=$torrent;
                     }

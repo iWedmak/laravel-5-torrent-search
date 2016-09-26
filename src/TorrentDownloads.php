@@ -7,8 +7,6 @@ class TorrentDownloads implements TorrentSearchInterface
 
     public static function page($url, $cache=5, $client=false)
     {
-        sleep(1);
-        //$cache=5;
         if(!$client)
         {
             $client=new Parser;
@@ -36,6 +34,7 @@ class TorrentDownloads implements TorrentSearchInterface
                         break;
                 }
             }
+            pre($url);
             $torrent=Search::makeRes
                 (
                     'TorrentDownloads', 

@@ -15,7 +15,7 @@ class KickassTorrents implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            //pre($url);
+            pre($url);
             //pre($resp);
             $torrent=Search::makeRes
                 (
@@ -23,9 +23,9 @@ class KickassTorrents implements TorrentSearchInterface
                     $html->find('h1', 0)->find('a', 0)->attr['href'], 
                     $html->find('h1', 0)->plaintext, 
                     $html->find('a[href*=magnet]', 0)->attr['href'], 
-                    $html->find('div.widgetSize strong', 0)->plaintext, 
-                    $html->find('div.seedBlock strong', 0)->plaintext, 
-                    $html->find('div.leechBlock strong', 0)->plaintext
+                    $html->find('div.widgetSize', 0)->plaintext, 
+                    $html->find('div.seedBlock', 0)->plaintext, 
+                    $html->find('div.leechBlock', 0)->plaintext
                 );
             return $torrent;
         }
@@ -48,7 +48,7 @@ class KickassTorrents implements TorrentSearchInterface
                 $torrent=Search::makeRes
                 (
                     'KickassTorrents', 
-                    'https://kat.cr'.$tr->find('a.cellMainLink', 0)->attr['href'], 
+                    'https://kickass.cd'.$tr->find('a.cellMainLink', 0)->attr['href'], 
                     $tr->find('a.cellMainLink', 0)->plaintext, 
                     $tr->find('a[href*=magnet]', 0)->attr['href'], 
                     $tr->find('td', 1)->plaintext,
