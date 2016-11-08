@@ -1,6 +1,7 @@
 <?php namespace iWedmak\TorrentSearch;
 
 use iWedmak\ExtraCurl\Parser;
+use iWedmak\Helper\Mate;
 
 class Tracker1337x implements TorrentSearchInterface 
 {
@@ -15,25 +16,18 @@ class Tracker1337x implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            if($html->find('div.top-row strong', 0) && $html->find('div.top-row strong', 0)->plaintext!='Error')
+            if($html->find('a[href*=magnet]', 0))
             {
                 $size=false;
-                foreach($html->find('div.category-detail li') as $li)
-                {
-                    if($li->find('strong', 0) && $li->find('strong', 0)->plaintext=='Total size')
-                    {
-                        $size=$li->find('span', 0)->plaintext;
-                    }
-                }
                 $torrent=Search::makeRes
                     (
                         'Tracker1337x', 
                         $url, 
-                        $html->find('div.top-row strong', 0)->plaintext, 
+                        Mate::match('Download [*] Torrent', $html->find('title', 0)->plaintext), 
                         $html->find('a[href*=magnet]', 0)->attr['href'], 
                         $size, 
-                        $html->find('span.green', 0)->plaintext, 
-                        $html->find('span.red', 0)->plaintext
+                        $html->find('span.seeds', 0)->plaintext, 
+                        $html->find('span.leeches', 0)->plaintext
                     );
                 return $torrent;
             }
@@ -54,20 +48,24 @@ class Tracker1337x implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
-            foreach($html->find('ul.clearfix li') as $tr)
+            //pre($resp);
+            //pre($html->find('.table-list tr'));
+            foreach($html->find('table tr') as $tr)
             {
-                if($tr->find('a[href*=torrent]', 0))
+                //pre('some');
+                if($tr->find('td.name a', 1)) 
                 {
                     //pre($tr->find('div.uploader a, div.user a, div.vip a', 0)->plaintext);//for future reference in case of span filter
+                    //pre($tr->find('td.name a', 1)->plaintext);
                     $torrent=Search::makeRes
                     (
                         'Tracker1337x', 
-                        'http://1337x.to'.$tr->find('a[href*=torrent]', 0)->attr['href'], 
-                        $tr->find('a[href*=torrent]', 0)->plaintext, 
+                        'http://1337x.to'.$tr->find('td.name a', 1)->attr['href'], 
+                        $tr->find('td.name a', 1)->plaintext, 
                         false, 
-                        $tr->find('div.coll-4 span', 0)->plaintext, 
-                        $tr->find('span.green', 0)->plaintext, 
-                        $tr->find('span.red', 0)->plaintext
+                        $tr->find('td.size', 0)->plaintext, 
+                        $tr->find('td.seeds', 0)->plaintext, 
+                        $tr->find('td.leeches', 0)->plaintext
                     );
                     $result[]=$torrent;
                     //*/
