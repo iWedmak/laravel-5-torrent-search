@@ -20,7 +20,6 @@ class Search
         $array['title']=trim($title);
         $array['magnet']=trim($magnet);
         $array['size']=html_entity_decode(trim($size));
-        
         $array['seeds']=(is_int($seeds/1))? (int)trim($seeds) : (boolean)$seeds;
         $array['leachs']=(is_int($leachs/1))? (int)trim($leachs) : (boolean)$leachs;
         $array['lang']=trim($lang);
