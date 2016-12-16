@@ -54,9 +54,9 @@ class AhaShare implements TorrentSearchInterface
                     $torrent=Search::makeRes
                     (
                         'AhaShare', 
-                        'http://http://www.ahashare.com'.$tr->find('a', 1)->attr['href'], 
+                        'http://ahashare.com'.$tr->find('a', 1)->attr['href'], 
                         $tr->find('a', 1)->attr['title'], 
-                        'http://http://www.ahashare.com'.$tr->find('td', 2)->find('a', 0)->attr['href'], 
+                        'http://ahashare.com'.$tr->find('td', 2)->find('a', 0)->attr['href'], 
                         $tr->find('td', 4)->plaintext, 
                         $tr->find('td font[color=green]', 0)->plaintext, 
                         $tr->find('td font[color=red]', 0)->plaintext

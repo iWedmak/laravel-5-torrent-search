@@ -11,12 +11,13 @@ class ExtraTorrent implements TorrentSearchInterface
         {
             $client=new Parser;
         }
-        if($resp=$client->get($url, $cache))
+        if($resp=$client->get($url, $cache, 'file'))
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
             //pre('page');
-            //pre($url);
+            pre($url);
+            pre($resp);
             $torrent=Search::makeRes
                 (
                     'ExtraTorrent', 
