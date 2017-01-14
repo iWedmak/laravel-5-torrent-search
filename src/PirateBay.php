@@ -11,7 +11,7 @@ class PirateBay implements TorrentSearchInterface
         {
             $client=new Parser;
         }
-        if($resp=$client->get($url, $cache, 'file'))
+        if($resp=$client->get($url, $cache))
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
@@ -59,32 +59,33 @@ class PirateBay implements TorrentSearchInterface
         {
             $client=new Parser;
         }
-        if($resp=$client->get($url, $cache, 'file'))
+        if($resp=$client->get($url, $cache))
         {
             //pre($url);
             $html=new \Htmldom;
             $html->str_get_html($resp);
             //dd($resp);
+            //dd($url);
             $result=[];
-            foreach($html->find('.results tr') as $tr)
+            foreach($html->find('#searchResult tr') as $tr)
             {
                 //dd($tr);
                 if($tr->find('td', 1))
                 {
                     
                     //* for one column mode
-                    if(!Search::badWords($tr->find('i a[title*=Browse]', 0)->plaintext))
+                    if(($tr->find('td a[title*=Browse]', 0) && !Search::badWords($tr->find('td a[title*=Browse]', 0)->plaintext)) || !$tr->find('td a[title*=Browse]', 0))
                     {
-                        preg_match('/Size (.*?)\,/i', $tr->find('i', 0)->plaintext, $extra);
+                        //preg_match('/Size (.*?)\,/i', $tr->find('i', 0)->plaintext, $extra);
                         $torrent=Search::makeRes
                             (
                                 'PirateBay', 
                                 'https://thepiratebay.cr'.$tr->find('a[href*=torrent]', 0)->attr['href'], 
                                 $tr->find('a[href*=torrent]', 0)->plaintext, 
                                 $tr->find('a[href*=magnet]', 0)->attr['href'], 
-                                $extra[1], 
-                                $tr->find('td', 1)->plaintext, 
-                                $tr->find('td', 2)->plaintext
+                                $tr->find('td', 4)->plaintext, 
+                                $tr->find('td', 5)->plaintext, 
+                                $tr->find('td', 6)->plaintext
                             );
                         $result[]=$torrent;
                     }

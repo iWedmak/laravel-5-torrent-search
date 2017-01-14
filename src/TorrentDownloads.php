@@ -35,6 +35,7 @@ class TorrentDownloads implements TorrentSearchInterface
                 }
             }
             pre($url);
+            pre($html->find('h1', 0)->plaintext);
             $torrent=Search::makeRes
                 (
                     'TorrentDownloads', 
