@@ -15,38 +15,41 @@ class TorrentDownloads implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            
-            $seed=false;
-            $leeach=false;
-            $size=false;
-            foreach($html->find('div.grey_bar1') as $div)
+            if($html->find('h1.titl_1', 0))
             {
-                switch($div->find('span', 0)->plaintext)
+                $seed=false;
+                $leeach=false;
+                $size=false;
+                foreach($html->find('div.grey_bar1') as $div)
                 {
-                    case "Seeds: ":
-                        list($trach, $seed)=explode(': ', $div->plaintext, 2);
-                        break;
-                    case "Leechers: ":
-                        list($trach, $leeach)=explode(': ', $div->plaintext, 2);
-                        break;
-                    case "Total Size: ":
-                        list($trach, $size)=explode(': ', $div->plaintext, 2);
-                        break;
+                    switch($div->find('span', 0)->plaintext)
+                    {
+                        case "Seeds: ":
+                            list($trach, $seed)=explode(': ', $div->plaintext, 2);
+                            break;
+                        case "Leechers: ":
+                            list($trach, $leeach)=explode(': ', $div->plaintext, 2);
+                            break;
+                        case "Total Size: ":
+                            list($trach, $size)=explode(': ', $div->plaintext, 2);
+                            break;
+                    }
                 }
+                pre($url);
+                pre($html->find('h1', 0)->plaintext);
+                $torrent=Search::makeRes
+                    (
+                        'TorrentDownloads', 
+                        $url, 
+                        $html->find('h1.titl_1', 0)->plaintext, 
+                        $html->find('a[href*=magnet]', 0)->attr['href'], 
+                        $size, 
+                        $seed, 
+                        $leeach
+                    );
+                return $torrent;
             }
-            pre($url);
-            pre($html->find('h1', 0)->plaintext);
-            $torrent=Search::makeRes
-                (
-                    'TorrentDownloads', 
-                    $url, 
-                    $html->find('h1.titl_1', 0)->plaintext, 
-                    $html->find('a[href*=magnet]', 0)->attr['href'], 
-                    $size, 
-                    $seed, 
-                    $leeach
-                );
-            return $torrent;
+            
         }
         return Search::makeError($client);
     }

@@ -7,6 +7,7 @@ class ExtraTorrent implements TorrentSearchInterface
 
     public static function page($url, $cache=5, $client=false)
     {
+        return false;        
         if(!$client)
         {
             $client=new Parser;
@@ -16,8 +17,8 @@ class ExtraTorrent implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             //pre('page');
-            pre($url);
-            pre($resp);
+            //pre($url);
+            //pre($resp);
             $torrent=Search::makeRes
                 (
                     'ExtraTorrent', 
