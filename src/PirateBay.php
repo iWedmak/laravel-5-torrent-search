@@ -29,6 +29,10 @@ class PirateBay implements TorrentSearchInterface
                     {
                         $leechs=$html->find('dl.col2 dd', $key)->plaintext;
                     }
+                    elseif($dt->plaintext=='Uploaded:')
+                    {
+                        $publish=$html->find('dl.col2 dd', $key)->plaintext;
+                    }
                     elseif($dt->plaintext=='By:')
                     {
                         if(Search::badWords($html->find('dl.col2 dd', $key)->plaintext))
@@ -37,15 +41,19 @@ class PirateBay implements TorrentSearchInterface
                         }
                     }
                 }
+                //pre($resp);
                 $torrent=Search::makeRes
                     (
                         'PirateBay', 
-                        $html->find('div#title a', 0)->attr['href'], 
+                        $url, 
                         $html->find('div#title', 0)->plaintext, 
                         $html->find('a[href*=magnet]', 0)->attr['href'], 
                         $size, 
                         @$seeds, 
-                        @$leechs
+                        @$leechs,
+                        false,
+                        @$html->find('div.nfo pre', 0)->plaintext,
+                        @$publish
                     );
                 return $torrent;
             }
@@ -61,15 +69,12 @@ class PirateBay implements TorrentSearchInterface
         }
         if($resp=$client->get($url, $cache))
         {
-            //pre($url);
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            //dd($resp);
-            //dd($url);
             $result=[];
+            $url_parsed = parse_url($url);
             foreach($html->find('#searchResult tr') as $tr)
             {
-                //dd($tr);
                 if($tr->find('td', 1))
                 {
                     
@@ -80,7 +85,7 @@ class PirateBay implements TorrentSearchInterface
                         $torrent=Search::makeRes
                             (
                                 'PirateBay', 
-                                'https://thepiratebay.cr'.$tr->find('a[href*=torrent]', 0)->attr['href'], 
+                                'https://'.$url_parsed['host'].$tr->find('a[href*=torrent]', 0)->attr['href'], 
                                 $tr->find('a[href*=torrent]', 0)->plaintext, 
                                 $tr->find('a[href*=magnet]', 0)->attr['href'], 
                                 $tr->find('td', 4)->plaintext, 
@@ -91,7 +96,7 @@ class PirateBay implements TorrentSearchInterface
                     }
                     //*/
                     
-                    /* for two colums mode
+                    /* for two colums mode //old
                     $torrent=Search::makeRes
                         (
                             'PirateBay', 

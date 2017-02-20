@@ -1,6 +1,7 @@
 <?php namespace iWedmak\TorrentSearch;
 
 use iWedmak\ExtraCurl;
+use iWedmak\Helper\Mate;
 
 class Search 
 {
@@ -13,16 +14,18 @@ class Search
         return $search_string;
     }
     
-    public static function makeRes($source, $url, $title, $magnet=false, $size=false, $seeds=false, $leachs=false, $lang=false)
+    public static function makeRes($source, $url, $title, $magnet=false, $size=false, $seeds=false, $leachs=false, $lang=false, $desc=false, $publish=false)
     {
         $array['source']=$source;
         $array['url']=trim($url);
         $array['title']=trim($title);
         $array['magnet']=trim($magnet);
-        $array['size']=html_entity_decode(trim($size));
+        $array['size']=Mate::sizer(html_entity_decode(trim($size)));
         $array['seeds']=(is_bool($seeds))? (boolean)$seeds : (int)trim($seeds);
         $array['leachs']=(is_bool($leachs))? (boolean)$leachs : (int)trim($leachs);
         $array['lang']=trim($lang);
+        $array['description']=trim($desc);
+        $array['published_at']=date('Y-m-d H:i:s',strtotime(trim($publish)));
         return $array;
     }
     

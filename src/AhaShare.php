@@ -47,6 +47,7 @@ class AhaShare implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
+            $url_parsed = parse_url($url);
             foreach($html->find('table.ttable_headinner tr') as $tr)
             {
                 if($tr->find('td a img[src=/images/icon_download.gif]', 0)) 
@@ -54,9 +55,9 @@ class AhaShare implements TorrentSearchInterface
                     $torrent=Search::makeRes
                     (
                         'AhaShare', 
-                        'http://ahashare.com'.$tr->find('a', 1)->attr['href'], 
+                        'https://'.$url_parsed['host'].$tr->find('a', 1)->attr['href'], 
                         $tr->find('a', 1)->attr['title'], 
-                        'http://ahashare.com'.$tr->find('td', 2)->find('a', 0)->attr['href'], 
+                        'https://'.$url_parsed['host'].$tr->find('td', 2)->find('a', 0)->attr['href'], 
                         $tr->find('td', 4)->plaintext, 
                         $tr->find('td font[color=green]', 0)->plaintext, 
                         $tr->find('td font[color=red]', 0)->plaintext

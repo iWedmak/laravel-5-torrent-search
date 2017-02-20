@@ -33,10 +33,13 @@ class TorrentDownloads implements TorrentSearchInterface
                         case "Total Size: ":
                             list($trach, $size)=explode(': ', $div->plaintext, 2);
                             break;
+                        case "Torrent added: ":
+                            list($trach, $publish)=explode(': ', $div->plaintext, 2);
+                            break;
                     }
                 }
-                pre($url);
-                pre($html->find('h1', 0)->plaintext);
+                //pre($url);
+                //pre($html->find('h1', 0)->plaintext);
                 $torrent=Search::makeRes
                     (
                         'TorrentDownloads', 
@@ -45,7 +48,10 @@ class TorrentDownloads implements TorrentSearchInterface
                         $html->find('a[href*=magnet]', 0)->attr['href'], 
                         $size, 
                         $seed, 
-                        $leeach
+                        $leeach,
+                        false,
+                        false,
+                        $publish
                     );
                 return $torrent;
             }
@@ -66,6 +72,7 @@ class TorrentDownloads implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
+            $url_parsed = parse_url($url);
             foreach($html->find('div.grey_bar3') as $tr)
             {
                 if($tr->find('a[title*=torrent]', 0))
@@ -91,7 +98,7 @@ class TorrentDownloads implements TorrentSearchInterface
                     $torrent=Search::makeRes
                     (
                         'TorrentDownloads', 
-                        'https://www.torrentdownloads.me'.$tr->find('a[title*=torrent]', 0)->attr['href'], 
+                        'https://'.$url_parsed['host'].$tr->find('a[title*=torrent]', 0)->attr['href'], 
                         $tr->find('a[title*=torrent]', 0)->plaintext, 
                         false, 
                         $size, 

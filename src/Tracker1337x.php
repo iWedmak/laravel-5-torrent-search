@@ -19,15 +19,18 @@ class Tracker1337x implements TorrentSearchInterface
             if($html->find('a[href*=magnet]', 0))
             {
                 $size=false;
+                preg_match('/<li> <strong>Total size<\/strong> <span>(?<size>.*?)<\/span> <\/li>/iu', $resp, $size);
                 $torrent=Search::makeRes
                     (
                         'Tracker1337x', 
                         $url, 
                         Mate::match('Download [*] Torrent', $html->find('title', 0)->plaintext), 
                         $html->find('a[href*=magnet]', 0)->attr['href'], 
-                        $size, 
+                        $size['size'], 
                         $html->find('span.seeds', 0)->plaintext, 
-                        $html->find('span.leeches', 0)->plaintext
+                        $html->find('span.leeches', 0)->plaintext,
+                        false,
+                        $html->find('#description', 0)->plaintext
                     );
                 return $torrent;
             }
@@ -44,15 +47,12 @@ class Tracker1337x implements TorrentSearchInterface
         
         if($resp=$client->get($url, $cache, 'file'))
         {
-            //dd($resp);
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
-            //pre($resp);
-            //pre($html->find('.table-list tr'));
+            $url_parsed = parse_url($url);
             foreach($html->find('table tr') as $tr)
             {
-                //pre('some');
                 if($tr->find('td.name a', 1)) 
                 {
                     //pre($tr->find('div.uploader a, div.user a, div.vip a', 0)->plaintext);//for future reference in case of span filter
@@ -60,7 +60,7 @@ class Tracker1337x implements TorrentSearchInterface
                     $torrent=Search::makeRes
                     (
                         'Tracker1337x', 
-                        'http://1337x.to'.$tr->find('td.name a', 1)->attr['href'], 
+                        'https://'.$url_parsed['host'].$tr->find('td.name a', 1)->attr['href'], 
                         $tr->find('td.name a', 1)->plaintext, 
                         false, 
                         $tr->find('td.size', 0)->plaintext, 

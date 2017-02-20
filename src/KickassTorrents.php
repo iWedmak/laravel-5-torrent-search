@@ -15,19 +15,23 @@ class KickassTorrents implements TorrentSearchInterface
         {
             $html=new \Htmldom;
             $html->str_get_html($resp);
-            pre($url);
-            //pre($resp);
-            $torrent=Search::makeRes
-                (
-                    'KickassTorrents', 
-                    $html->find('h1', 0)->find('a', 0)->attr['href'], 
-                    $html->find('h1', 0)->plaintext, 
-                    $html->find('a[href*=magnet]', 0)->attr['href'], 
-                    $html->find('div.widgetSize', 0)->plaintext, 
-                    $html->find('div.seedBlock', 0)->plaintext, 
-                    $html->find('div.leechBlock', 0)->plaintext
-                );
-            return $torrent;
+            if($html->find('h1', 0))
+            {
+                $torrent=Search::makeRes
+                    (
+                        'KickassTorrents', 
+                        $url, 
+                        $html->find('h1', 0)->plaintext, 
+                        $html->find('a[href*=magnet]', 0)->attr['href'], 
+                        $html->find('div.widgetSize', 0)->plaintext, 
+                        $html->find('div.seedBlock strong', 0)->plaintext, 
+                        $html->find('div.leechBlock strong', 0)->plaintext,
+                        false,
+                        $html->find('#desc', 0)->plaintext,
+                        $html->find('time.timeago', 0)->attr['datetime']
+                    );
+                return $torrent;
+            }
         }
         return Search::makeError($client);
     }
@@ -43,17 +47,21 @@ class KickassTorrents implements TorrentSearchInterface
             $html=new \Htmldom;
             $html->str_get_html($resp);
             $result=[];
+            $url_parsed = parse_url($url);
             foreach($html->find('tr.odd , tr.even') as $tr)
             {
                 $torrent=Search::makeRes
                 (
                     'KickassTorrents', 
-                    'https://kickass.cd'.$tr->find('a.cellMainLink', 0)->attr['href'], 
+                    'https://'.$url_parsed['host'].$tr->find('a.cellMainLink', 0)->attr['href'], 
                     $tr->find('a.cellMainLink', 0)->plaintext, 
                     $tr->find('a[href*=magnet]', 0)->attr['href'], 
                     $tr->find('td', 1)->plaintext,
                     $tr->find('td.green', 0)->plaintext,
-                    $tr->find('td.red', 0)->plaintext
+                    $tr->find('td.red', 0)->plaintext,
+                    false,
+                    false,
+                    $tr->find('td', 2)->attr['title']
                 );
                 $result[]=$torrent;
             }
